@@ -42,7 +42,8 @@ access to /dev/mem, wich means you'll need to execute it as root.
 As this is not safe at all, I recommend adding a sudo exception to nopasswd
 open_door and simpledod
 
-Now, the software is divied in two parts:
+Now, the software is divided in two parts:
+
 - Web interface
     The main user management system
     It's designed to be able to open the door and register various events.
