@@ -68,6 +68,7 @@
     <button class="btn btn-large btn-success" onclick="location.href='/home/management/';">  Todos </button>
     <button class="btn btn-large btn-warning" onclick="location.href='/home/management/1';"> P. validar </button>
     <button class="btn btn-large btn-danger" onclick="location.href='/home/management/2';">  P. pago </button>
+    <button class="btn btn-large btn-success" onclick="location.href='/home/management/3';">  P. devolucion libro </button>
 <br/>
 <br/>
 

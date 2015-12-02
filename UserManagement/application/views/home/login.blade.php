@@ -11,9 +11,8 @@
 <body>
     <div class="container-fluid" style="margin-left:20px; margin-right:20px">
         <header style="text-align:center; margin-bottom:50px;">
-{{ Hash::make('ohveiM0o');  }}
             <h1> <a href="/">  {{ $site->name  }} </a></h1>
-
+{{ $pw }}
         </header>
         <div class="span12">
             <div role="main" class="span4">

@@ -96,8 +96,7 @@ foreach ($props as $name => $prop){ ?>
     <label class="control-label" for="has_parking"> ¿Tiene acceso al parking?
     </label>
     <div class="controls">
-        <input type="checkbox" name=has_parking
-                value="<?php echo $user?$user->has_parking:'false';?>"/>
+        <input type="checkbox" name=has_parking <?php echo $user->has_parking?"checked":""; ?> value=1 />
     </div>
 </div>
 
@@ -116,7 +115,7 @@ if ($show_stats && $user){
 <br/><button class="btn btn-success btn-big"
         onclick="assign_card(); return false"> Asociar tarjeta </button><br/>
     <button class="btn btn-success btn-big"
-            onclick="assign_card(); return false"> Anular tarjeta </button><br/>
+            onclick="unassign_card(); return false"> Anular tarjeta </button><br/>
     <br/>
 <?php echo $user->id_tarjeta? "<div class='alert alert-info'>".
 "Tarjeta asociada actualmente : ". $user->id_tarjeta ."</div>" : ""; ?>
@@ -128,7 +127,7 @@ if ($show_stats && $user){
     <button onclick="validar(); return false" class="btn btn-warning"> Validar usuario </button>
     <?php
         echo "</div>";
-    } elseif ($user->fechapago < date('yyyy-mm-dd') ) {
+    } elseif ($user->fechapago < date('Y-m-d') ) {
 ?>
 <div class="alert alert-danger"> Este usuario tiene un pago pendiente
     <label> Introduzca una nueva fecha de vencimiento del pago</label>
@@ -137,7 +136,8 @@ if ($show_stats && $user){
 
 <?
     } else{
-        echo "<div class='alert alerf-info'>Usuario pagado hasta: $user->fechapago</div>";
+        echo "<div class='alert alerf-info'>Usuario pagado hasta: $user->fechapago<br/><br/>";
+    	echo '<input type="date" name=fechapago value="'.$user->fechapago.'" style="display:-webkit-inline-box"></div>';
     }
 ?>
 </form>
@@ -145,9 +145,14 @@ if ($show_stats && $user){
 <div style="height:100px; overflow-y:scroll;">
 <?php
     $logs = DB::table('access_log')->where('id_tarjeta', '=', $user->id_tarjeta);
+    setlocale(LC_TIME, 'es_ES'); 
+    $logs_ = array(); 
     foreach ($logs->get() as $log){
+        $logs_[] = $log;
+    }
+    foreach (array_reverse($logs_) as $log) {
         $estado = Estado::find($log->status)->nombre;
-        echo "Registrado " . $estado . " ($log->extra_data) en " . $log->date . "<br/>";
+        echo "Registrado " . $estado . " ($log->extra_data) en " . gmstrftime('%H:%M:%S', strtotime($log->date) +7200 ) . "<br/>";
     }
 
 ?>

@@ -83,6 +83,10 @@ CREATE TABLE `members` (
   `surname` text,
   `fechaPagado` date DEFAULT NULL,
   `fechaPago` date DEFAULT NULL,
+  `comment` text`,
+  `payment` text`,
+  `associateno` text`,
+  `has_parking`
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

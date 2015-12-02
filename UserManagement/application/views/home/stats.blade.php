@@ -10,19 +10,24 @@
     <script src="/js/html5-canvas-bar-graph.js"></script>
 </head>
 <body>
-    <div class="container">
 <?php if ($titulo === true){?>
-        <header style="text-align:center; margin-bottom:50px;">
-            <h1> <a href="/"> {{ $site->name  }} </a></h1>
-        </header>
-        <?php } ?>
+    <header style="text-align:center; margin-bottom:50px;">
+        <h1> <a href="/"> {{ $site->name  }} </a></h1>
+    </header>
+<?php
+        }
+$classes = array ( 0, 1, 2);
+foreach ($classes as $elem) {
+?>
+    <div class="container">
+        <h2 style="text-transform:uppercase"><?php echo Estado::find($elem)->nombre; ?> </h2>
         <div class="span5">
             <h3> Estadisticas por dia </h3>
-            <canvas id="days"></canvas>
+            <canvas id="days_<?php echo $elem;?>"></canvas>
         </div>
         <div class="span5">
             <h3> Estadisticas por hora </h3>
-            <canvas id="hours"></canvas>
+            <canvas id="hours_<?php echo $elem?>"></canvas>
         </div>
     </div>
 <?php
@@ -41,15 +46,17 @@ $days = array(
 );
 
 foreach ($accesses as $access) {
-    $key = explode(':', explode(' ', $access->date)[1])[0];
-    $hours[$key] +=1;
-    $date = date('w', strtotime($access->date));
-    $days[$date] += 1;
+    if ($access->status == $elem) {
+        $key = explode(':', explode(' ', $access->date)[1])[0];
+        $hours[$key] +=1;
+        $date = date('w', strtotime($access->date));
+        $days[$date] += 1;
+    }
 }
 
 ?>
     <script>
-        var ctx = document.getElementById("days").getContext("2d");
+        var ctx = document.getElementById("days_<?php echo $elem?>").getContext("2d");
         var graph = new BarGraph(ctx);
         graph.margin = 2;
         graph.colors = ["#fff"];
@@ -58,7 +65,7 @@ foreach ($accesses as $access) {
         graph.xAxisLabelArr = ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"];
         graph.update([<?php echo implode(',', $days); ?>]);
 
-        var ctx = document.getElementById("hours").getContext("2d");
+        var ctx = document.getElementById("hours_<?php echo $elem?>").getContext("2d");
         var graph = new BarGraph(ctx);
         graph.margin = 2;
         graph.colors = ["#fff"];
@@ -67,5 +74,6 @@ foreach ($accesses as $access) {
         graph.xAxisLabelArr = [<?php echo implode(',', array_keys($hours)); ?>];
         graph.update([<?php echo implode(',', $hours); ?>]);
     </script>
+    <?php } ?>
 </body>
 </html>

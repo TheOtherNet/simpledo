@@ -46,7 +46,7 @@
 <body>
     <div class="container-fluid" style="margin-left:0px; margin-right:0px">
         <header style="text-align:center; margin-bottom:50px;">
-            <h1> <a href="/"> {{ $site->name  }} </a> <a href="/home/logout">Cerrar sesión </a> </h1>
+            <h1> <a href="/"> {{ $site->name  }} </a> <a style="color:red; font-size:medium; margin-left:30px;" href="/home/logout">Cerrar sesión </a> </h1>
         </header>
         <div class="span13">
             <div role="main" class="span4">
@@ -63,7 +63,7 @@
             <div role="main" class="span4">
                 <fieldset>
                     <legend>Apertura remota de puerta</legend>
-                    <a href="/home/opendoor">
+                    <a href="/home/opendoor" onclick="if(!confirm('¿Está seguro de que quiere abrir la puerta?')){ return false; }" >
                         <div class="well" style="text-align:right">
                             <h1 style="float:left; padding-top:30px"> Abrir  </h1>
                             <img style="text-align:right" src="/img/unlock.png" />

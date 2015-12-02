@@ -17,10 +17,15 @@ class Base_Controller extends Controller {
     public function action_index($errors=false)
     {
         $login = Auth::check();
+        if (Input::has('pwgen')){
+            $pw = Hash::make(Input::get('pwgen'));
+        } else {
+            $pw = "";
+        }
         if (!$login){
             return View::make('home.login')->with(
                 'site', Site::find(1)
-            );
+            )->with('pw', $pw);
         } else {
             return View::make('home.index')->with(
                 'site', Site::find(1)

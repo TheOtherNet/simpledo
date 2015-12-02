@@ -10,15 +10,23 @@ class Home_Controller extends Base_Controller {
         return Redirect::to('/');
     }
 
+    public function action_log()
+    {
+        return "<pre>".
+            file_get_contents('/tmp/simpledod.log')
+            ."</pre>";
+    }
+
     public function action_registro($estado)
     {
+       date_default_timezone_set('GMT');
        // Para sacar el nombre: Estado::find($estado)->nombre;
        DB::table('access_log')->insert(
            array(
                'id_tarjeta' => $_POST['id'],
                'extra_data' => $_POST['extra'],
                'status'     => $estado,
-               'date'       => date('Y/m/d H:M:s')
+               'date'       => date('Y-m-d H:i:s')
            )
        );
     }
@@ -36,7 +44,11 @@ class Home_Controller extends Base_Controller {
     public function action_delete($id)
     {
         if (Auth::check()){
-            Member::find($id)->delete();
+            $member = Member::find($id);
+            DB::table('access_log')->where(
+                'id_tarjeta', "=", $member->id_tarjeta 
+            )->delete();
+            $member->delete();
         }
     }
 
@@ -89,8 +101,16 @@ class Home_Controller extends Base_Controller {
 
         $fields = array(
             'dni', 'email', 'name', 'surname', 'fechapago',
-            'phone', 'address', 'status', 'id_tarjeta'
+            'phone', 'address', 'status', 'id_tarjeta', 'has_parking',
+            'comment', 'associateno', 'payment'
         );
+
+
+
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user->has_parking = null; // Nullify this.
+            $user->id_tarjeta = null; // Nullify this.
+        }
 
         foreach ($fields as $field){
             if (Input::has($field)){
@@ -137,6 +157,32 @@ class Home_Controller extends Base_Controller {
                     '=',
                     '1'
                 );
+            } elseif ($status == 3) {
+                $bad_users = ['q'];
+                $books = DB::table('access_log')->where(
+                    'status',
+                    '=',
+                    "2"
+                ); // Get all the books.
+                foreach ($books->get() as $book){
+                    if (count(DB::table('access_log')->where(
+                            'status',
+                            '=',
+                            "2"
+                        )->where(
+                            'id_tarjeta',
+                            '=',
+                            $book->id_tarjeta
+                        )->get()
+                    ) % 2 != 0 ) {
+                        $bad_users[] = $book->id_tarjeta;
+                    }
+                }
+                $users = Member::where_in(
+                    'id_tarjeta',
+                    array_unique($bad_users)
+                );
+
             }
             if (Input::has('search')){
                 $users = $users->where(
